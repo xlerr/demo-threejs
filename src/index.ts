@@ -1,19 +1,21 @@
 // @ts-ignore
 import * as THREE from 'three';
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import './main.css';
+
+const OrbitControls = require('three-orbitcontrols/OrbitControls')
+const TransformControls = require('three-transformcontrols/index')
+const DragControls = require('three-dragcontrols/lib/index')
 
 let width = window.innerWidth;
 let height = window.innerHeight;
 
 //创建场景.
 let scene: THREE.Scene = new THREE.Scene();
-let bg: THREE.Color = new THREE.Color();
-bg.setRGB(234, 234, 234);
-scene.background = bg;
+scene.background = new THREE.Color(0xe0e0e0);
 
 //相机
-let camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(10, width / height, 0.1, 1000);
+let camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(70, width / height, 1, 10000);
+camera.position.set(0, 1000, 1800);
 //渲染器
 let renderer = new THREE.WebGLRenderer();
 //设置画布大小
@@ -21,14 +23,15 @@ renderer.setSize(width, height);
 //加入到body
 document.body.appendChild(renderer.domElement);
 
-// let grid: THREE.GridHelper = new THREE.GridHelper(200, 40, 0xffffff, 0xffffff);
-// grid.material.opacity = 0.2;
-// grid.material.transparent = true;
-// scene.add(grid);
+let grid: THREE.GridHelper = new THREE.GridHelper(5000, 60, 0x000000, 0x000000);
+grid.position.y = 0;
+grid.material.opacity = 0.25;
+grid.material.transparent = true;
+scene.add(grid);
 
 
 //第二步,创建几何体.
-let geometry: THREE.BoxGeometry = new THREE.BoxGeometry(1, 1, 1);
+let geometry: THREE.BoxGeometry = new THREE.BoxGeometry(500, 500, 500);
 let cube: THREE.Mesh = new THREE.Mesh(geometry, [
     new THREE.MeshBasicMaterial({color: 0x00ff00}),
     new THREE.MeshBasicMaterial({color: 0xff0000}),
@@ -43,7 +46,7 @@ scene.add(cube);
 
 
 //第二步,创建几何体.
-let geometry1: THREE.BoxGeometry = new THREE.BoxGeometry(1, 1, 1);
+let geometry1: THREE.BoxGeometry = new THREE.BoxGeometry(500, 100, 100);
 let cube1: THREE.Mesh = new THREE.Mesh(geometry1, [
     new THREE.MeshBasicMaterial({color: 0x00ff00}),
     new THREE.MeshBasicMaterial({color: 0xff0000}),
@@ -52,15 +55,27 @@ let cube1: THREE.Mesh = new THREE.Mesh(geometry1, [
     new THREE.MeshBasicMaterial({color: 0xff0fff}),
     new THREE.MeshBasicMaterial({color: 0xff00f0}),
 ]);
-cube1.position.x = 10;
+cube1.position.x = 500;
 cube1.position.y = 0;
 cube1.position.z = 0;
 scene.add(cube1);
 
-//设置相机位置
-camera.position.z = 53;
+// let controls = new OrbitControls(camera, renderer.domElement);
+// controls.damping = 0.2;
 
-let controls = new OrbitControls(camera, renderer.domElement);
+let transformControl = new TransformControls(camera, renderer.domElement);
+transformControl.addEventListener('dragging-changed', function (event) {
+    // controls.enabled = !event.value
+});
+scene.add(transformControl);
+transformControl.setMode('translate'); // scale, rotate, translate
+
+let dragControls = new DragControls([cube, cube1], camera, renderer.domElement);
+// dragControls.addEventListener('mousedown', function (event) {
+//     transformControl.attach(event.object);
+// });
+
+// controls.addEventListener('change', render);
 // const controls: OrbitControls = new OrbitControls(camera, renderer.domElement);
 // controls.enabled = true;
 // controls.maxDistance = 1500;
