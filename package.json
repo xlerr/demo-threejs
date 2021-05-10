@@ -27,7 +27,7 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "three": "^0.125.0",
     "three-dragcontrols": "^0.88.2",
     "three-orbitcontrols": "^2.102.1",
